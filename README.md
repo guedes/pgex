@@ -1,3 +1,3 @@
-# Pgex
+# PGEx
 
-** TODO: Add description **
+A work-in-progress PostgreSQL Message Protocol implementation in pure Elixir
