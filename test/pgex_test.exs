@@ -4,14 +4,15 @@ defmodule PgexTest do
   use ExUnit.Case
 
   test "connect" do
-    conninfo = PGEx.Connection.ConnectionInfo.new(port: 5437)
-    assert { :ok, sock } = PGEx.Connection.connect( conninfo )
-    conninfo = conninfo.socket(sock)
-    PGEx.Authentication.authenticate(conninfo)
+    conninfo = PGEx.Connection.ConnectionInfo.new(port: 5432)
+    assert { :ok, conninfo } = PGEx.Connection.connect(conninfo)
+    assert { :ok, conninfo } = PGEx.Authentication.authenticate(conninfo)
+    assert { :ok, result }   = PGEx.Query.execute(conninfo, "SELECT 1")
   end
 
   test "a simple example that IS NOT passing yet" do
     PGEx.connect
-    assert List.member? PGEx.tables, "pg_class"
+    assert Enum.member? PGEx.tables, "pg_class"
+
   end
 end
