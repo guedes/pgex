@@ -1,4 +1,7 @@
 defmodule PGEx do
+  @moduledoc """
+  Main module that is an interface to underling functions
+  """
 
   @doc false
   defmacro __using__(_opts) do
@@ -8,22 +11,5 @@ defmodule PGEx do
     end
   end
 
-  def establish_connection(args // nil) do
-    nil
-  end
-
-  def query(conn, sql) do
-    [
-      [ calc: 1, result: "TEST" ],
-      [ calc: 3, result: "TESTA" ]
-    ]
-  end
-
-  def connect(args // nil) do
-    { :ok, args }
-  end
-
-  def tables do
-    [ "teste1", "teste2" ]
-  end
+  # Yes, this is empty. It's a WIP.
 end

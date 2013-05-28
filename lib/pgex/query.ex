@@ -1,27 +1,27 @@
 defmodule PGEx.Query do
-  require PGEx.Protocol, as: Proto
+  use PGEx.Connection.Protocol
 
-  Record.import PGEx.Connection.ConnectionInfo, as: :connection_info
-  Record.import PGEx.Protocol.Message,          as: :message
+  def execute(state, query) do
+    data = envelope(:query, query)
+    res = PGEx.Connection.send_message(state, data)
+  
+    { :ok, result } = process_result( state )
 
-  def execute(connection_info() = conninfo, query) do
-    data = Proto.envelope(:query, query)
-    res = PGEx.Connection.send_message(conninfo.socket, data)
-
-    { code, message } = _r( conninfo )
-
-    IO.inspect code
-    IO.inspect message
-
-    { res, "1" }
+    { :ok, result.columns, result.rows }
   end
 
-  defp _r(connection_info() = conninfo) do
-    { :ok, message } = PGEx.Connection.receive_message(conninfo.socket)
-    IO.inspect message
+  defp process_result(state) do
+    { :ok, message } = PGEx.Connection.receive_message(state)
     case message do
-      { :read_for_query, status } -> { :ok, status }
-      _ -> _r(conninfo)
+      { :read_for_query, _status } -> { :ok, state }
+      { :got_columns, columns }   -> 
+        state = state.columns(columns)
+        process_result(state)
+      { :got_values, values }     ->
+        rows = state.rows ++ [ values ]
+        state = state.rows(rows)
+        process_result(state)
+      _ -> process_result(state)
     end
   end
 end
