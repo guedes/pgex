@@ -1,6 +1,6 @@
 # PGEx
 
-This project is a WIP. It implementats the [PostgreSQL's](http://www.postgresql.org/) [libpq](http://www.postgresql.org/docs/9.2/static/protocol.html) comunication protocol between front-end and backend in a pure Elixir. 
+This project is a WIP. It implements the [PostgreSQL's](http://www.postgresql.org/) [libpq](http://www.postgresql.org/docs/9.2/static/protocol.html) communication protocol between front-end and back-end in a pure Elixir. 
 
 # Motivation
 
