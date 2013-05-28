@@ -99,7 +99,7 @@ defmodule PGEx.Connection.Protocol do
     binary_to_columns_descriptions(binary, <<>>, [])
   end
 
-  defp binary_to_columns_descriptions(<<>>, acc, columns) do
+  defp binary_to_columns_descriptions(<<>>, _acc, columns) do
     columns
   end
   

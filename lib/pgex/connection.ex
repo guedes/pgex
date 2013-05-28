@@ -66,7 +66,7 @@ defmodule PGEx.Connection do
     send_message(state, startup_packet)
 
     { :ok , message } = receive_message(state)
-    { :authenticate, { code, salt } } = message
+    { :authenticate, { code, _salt } } = message
 
     case code do
       0 -> authentication_setup(state)

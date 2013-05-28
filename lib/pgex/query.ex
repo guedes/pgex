@@ -3,7 +3,7 @@ defmodule PGEx.Query do
 
   def execute(state, query) do
     data = envelope(:query, query)
-    res = PGEx.Connection.send_message(state, data)
+    _res = PGEx.Connection.send_message(state, data)
   
     { :ok, result } = process_result( state )
 
