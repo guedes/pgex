@@ -23,4 +23,10 @@ defmodule PGExClientTest do
     assert columns == ["relname","relkind"]
     assert rows == [["pg_statistic","r"],["pg_type","r"]]
   end
+
+  test "more complex queries" do
+    assert { :ok, conn } = PGEx.Connection.connect("postgresql://guedes:senha@localhost:5432/banco")
+
+    assert { :ok, columns, rows } = PGEx.Query.execute(conn, "SELECT * FROM pg_class")
+  end
 end

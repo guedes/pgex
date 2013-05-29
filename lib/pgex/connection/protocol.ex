@@ -88,6 +88,10 @@ defmodule PGEx.Connection.Protocol do
     values
   end
 
+  defp binary_to_columns_values(<<255, rest :: binary>>, values) do
+    binary_to_columns_values(rest, values)
+  end
+
   defp binary_to_columns_values(binary, values) do
     << size :: [ size(4), unit(8), integer ], rest :: binary >> = binary
     << value :: [ size(size), unit(8), binary ], rest :: binary >> = rest
