@@ -117,7 +117,7 @@ defmodule PGEx.Connection.Protocol do
        _format    :: 16 ,
        rest :: binary >> = rest
 
-    binary_to_columns_descriptions(rest, <<>>, columns ++ [ acc ])
+    binary_to_columns_descriptions(rest, <<>>, columns ++ [ {acc, type_id} ])
   end
 
   defp binary_to_columns_descriptions(<< start :: utf8, rest :: binary >>, acc, columns) do
