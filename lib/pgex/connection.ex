@@ -6,20 +6,20 @@ defmodule PGEx.Connection do
   alias :gen_tcp, as: TCP
 
   defrecord State, host: 'localhost',
-                   host_address: "127.0.0.1", 
-                   port: 5432, 
-                   user: nil, 
-                   password: nil, 
-                   database: "postgres", 
-                   appname: "pgex", 
-                   socket: nil, 
-                   status: :connection_bad, 
-                   last_query: nil, 
+                   host_address: "127.0.0.1",
+                   port: 5432,
+                   user: nil,
+                   password: nil,
+                   database: "postgres",
+                   appname: "pgex",
+                   socket: nil,
+                   status: :connection_bad,
+                   last_query: nil,
                    last_sqlstate: nil,
                    client_encoding: :sql_ascii,
                    transaction_status: :idle,
-                   server_version: nil, 
-                   server_pid: nil, 
+                   server_version: nil,
+                   server_pid: nil,
                    server_cancel_key: nil,
                    columns: [],
                    rows: []
@@ -48,7 +48,7 @@ defmodule PGEx.Connection do
   def receive_message(state, timeout // 5000) do
     { :ok, header } = TCP.recv(state.socket, 5, timeout)
     << code :: [ size(8), integer ], size :: [ size(4) , unit(8), integer ] >> = header
-    
+
     if size > 4 do
       { :ok, packet } = TCP.recv(state.socket, size - 4, timeout)
       decode(code, packet)
@@ -85,7 +85,7 @@ defmodule PGEx.Connection do
 
   defp parse_connection_info(<<"postgresql://", _ ::binary>> = connection_info) do
     uri = URI.parse(connection_info)
-    
+
     <<?/, database :: binary >> = uri.path
     [ username, password ] = String.split(uri.userinfo, ":")
 
