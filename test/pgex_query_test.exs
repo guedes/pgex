@@ -10,9 +10,9 @@ defmodule PGEx.Query.Test do
     assert ["result"] == columns
     assert [[1]]      == rows
 
-    assert { :ok, columns, rows } = PGEx.Query.execute(conn, "SELECT '1' as result, 1 = 1 as bool1, 1 = 2 as bool2, 't' as fake")
-    assert ["result","bool1","bool2","fake"] == columns
-    assert [["1", true, false,"t"]]          == rows
+    assert { :ok, columns, rows } = PGEx.Query.execute(conn, "SELECT '1' as result, 1 = 1 as bool1, 1 = 2 as bool2, 't' as fake, 1234 as number")
+    assert ["result","bool1","bool2","fake","number"] == columns
+    assert [["1", true, false,"t",1234]]              == rows
 
     assert { :ok, columns, rows } = PGEx.Query.execute(conn, "SELECT 1+1 as a, 2+3 as b")
     assert ["a","b"]   == columns

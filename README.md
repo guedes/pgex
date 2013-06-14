@@ -12,30 +12,36 @@ At this moment you can do something like this:
 
 ```elixir
  { :ok, conn } = PGEx.Connection.connect("postgresql://my_username:my_password@localhost:5432/my_database")
- 
+
  { :ok, columns, rows } = PGEx.Query.execute(conn, "SELECT 1 as result")
- IO.inspect columns 
+ IO.inspect columns
  #=> ["result"]
  IO.inspect rows
- #=> [["1"]]
- 
+ #=> [[1]]
+
  { :ok, columns, rows } = PGEx.Query.execute(conn, "SELECT 1+1 as a, 2+3 as b")
- IO.inspect columns 
+ IO.inspect columns
  #=> ["a","b"]
- IO.inspect rows 
- #=> [["2","5"]]
- 
+ IO.inspect rows
+ #=> [[2,5]]
+
  { :ok, columns, rows } = PGEx.Query.execute(conn, "SELECT 1 as a, 2 as b, 3 as c, 4 as d")
- IO.inspect columns 
+ IO.inspect columns
  #=> ["a","b","c","d"]
- IO.inspect rows 
- #=> [["1","2","3","4"]]
- 
+ IO.inspect rows
+ #=> [[1,2,3,4]]
+
  { :ok, columns, rows } = PGEx.Query.execute(conn, "SELECT relname,relkind FROM pg_class LIMIT 2")
  IO.inspect columns
  #=> ["relname","relkind"]
- IO.inspect rows 
+ IO.inspect rows
  #=> [ ["pg_statistic","r"], ["pg_type","r"] ]
+
+ { :ok, columns, rows } = PGEx.Query.execute(conn, "SELECT '1' as result, 1 = 1 as bool1, 1 = 2 as bool2, 't' as fake, 1234 as number")
+ IO.inspect columns
+ #=> ["result","bool1","bool2","fake","number"]
+ IO.inspect rows
+ #=> [["1", true, false,"t",1234]]
 ```
 
 ## TODO
@@ -44,6 +50,7 @@ At this moment you can do something like this:
 * authentication behaviour
 * non-blocking
 * asynchronous notifications
+* other types
 * benchmarks
 * everything else that is not working yet and should do... ":)
 
