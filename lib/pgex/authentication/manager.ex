@@ -2,17 +2,17 @@ defmodule PGEx.Authentication.Manager do
   alias PGEx.Authentication
   alias PGEx.Connection
   alias :gen_tcp, as: TCP
-  
+
   def authenticate(conn, auth_info) do
-    
+
     { auth_type, salt } = auth_info
 
-    case choose_auth_method(conn, auth_type) do
+    conn = case choose_auth_method(conn, auth_type) do
       { :ok, auth_method } -> auth_method.authenticate(conn.salt(salt))
       { :error, error }    -> conn.status(error)
     end
 
-    { :ok, conn }
+    authentication_setup(conn)
   end
 
   defp request_auth_type(conn) do

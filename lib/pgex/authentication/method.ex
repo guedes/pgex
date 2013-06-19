@@ -15,8 +15,8 @@ end
 
 defmodule PGEx.Authentication.Method.CleartextPassword do
   @behaviour PGEx.Authentication.Method.Behaviour
-  
-  def authenticate(conn), do: conn.status(:connected)
+
+  def authenticate(conn), do: conn #not implemented
 end
 
 defmodule PGEx.Authentication.Method.MD5Password do

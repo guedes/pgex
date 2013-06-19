@@ -35,17 +35,16 @@ defmodule PGEx.Connection do
 
   def connect(connection_info, authenticator) do
     { :ok, conn } = parse_connection_info(connection_info)
-    { :ok, sock } = TCP.connect(conn.host, 
-                                conn.port, 
-                                [ { :active, false }, 
-                                  :binary, 
-                                  { :packet, :raw } ], 
+    { :ok, sock } = TCP.connect(conn.host,
+                                conn.port,
+                                [ { :active, false },
+                                  :binary,
+                                  { :packet, :raw } ],
                                   5000)
     conn = conn.socket(sock)
     send_message(conn, build_startup_packet(conn))
 
     { :ok , { :authenticate, auth_info } } = receive_message(conn)
-    IO.inspect auth_info
     { :ok, conn } = authenticator.authenticate(conn, auth_info)
   end
 

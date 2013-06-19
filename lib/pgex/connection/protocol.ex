@@ -76,7 +76,15 @@ defmodule PGEx.Connection.Protocol do
     return_decoded(:got_values, binary_to_columns_values(rest))
   end
 
-  def decode(_not_implemented, _packet) do
+  def decode(?E, packet) do
+    << size :: [ size(4), unit(8), integer ], rest :: binary >> = packet
+    IO.inspect size
+    #    IO.inspect message
+    IO.inspect rest
+    #IO.inspect packet
+  end
+
+  def decode(not_implemented, _packet) do
     return_decoded(:continue, :noop)
   end
 
