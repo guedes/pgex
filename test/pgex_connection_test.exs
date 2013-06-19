@@ -3,8 +3,10 @@ Code.require_file "../test_helper.exs", __FILE__
 defmodule PGEx.Connection.Test do
   use ExUnit.Case
 
-  test "connect" do
-    assert { :ok, conn } = PGEx.Connection.connect("postgresql://guedes:senha@localhost:5432/banco")
+  @connection_info "postgresql://pgex:pgex@localhost:5432/test_pgex"
+
+  test :connect do
+    assert { :ok, conn } = PGEx.Connection.connect(@connection_info)
     assert is_port(conn.socket)
   end
 end

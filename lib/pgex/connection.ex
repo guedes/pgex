@@ -10,6 +10,7 @@ defmodule PGEx.Connection do
                    port: 5432,
                    user: nil,
                    password: nil,
+                   salt: nil,
                    database: "postgres",
                    appname: "pgex",
                    socket: nil,
@@ -29,15 +30,34 @@ defmodule PGEx.Connection do
   the connection information in `connection_info`
   """
   def connect(connection_info) do
-    { :ok, state } = parse_connection_info(connection_info)
-    { :ok, sock } = TCP.connect(state.host, state.port, [ { :active, false }, :binary, { :packet, :raw } ], 5000)
-    { :ok, state } = authenticate(state.socket(sock))
-    { :ok, state.socket(sock).status(:connection_ok) }
+    connect(connection_info, PGEx.Authentication.Manager)
+  end
+
+  def connect(connection_info, authenticator) do
+    { :ok, conn } = parse_connection_info(connection_info)
+    { :ok, sock } = TCP.connect(conn.host, 
+                                conn.port, 
+                                [ { :active, false }, 
+                                  :binary, 
+                                  { :packet, :raw } ], 
+                                  5000)
+    conn = conn.socket(sock)
+    send_message(conn, build_startup_packet(conn))
+
+    { :ok , { :authenticate, auth_info } } = receive_message(conn)
+    IO.inspect auth_info
+    { :ok, conn } = authenticator.authenticate(conn, auth_info)
   end
 
   @doc """
   Sends enveloped message to backend
   """
+  def send_message(state, data) when is_list(data) do
+    packet = Enum.map data, fn({ k, v }) -> encode(k, v) end |> envelope
+
+    send_message(state, packet)
+  end
+
   def send_message(state, data) do
     TCP.send(state.socket, data)
   end
@@ -60,28 +80,28 @@ defmodule PGEx.Connection do
   #
   # Private Helper Functions
   #
-  defp authenticate(state) do
-    startup_packet = build_startup_packet(state)
+  #defp authenticate(state) do
+  #  startup_packet = build_startup_packet(state)
 
-    send_message(state, startup_packet)
+  #  send_message(state, startup_packet)
 
-    { :ok , message } = receive_message(state)
-    { :authenticate, { code, _salt } } = message
+  #  { :ok , message } = receive_message(state)
+  #  { :authenticate, { code, _salt } } = message
 
-    case code do
-      0 -> authentication_setup(state)
-      _ -> { :error, :unknow_code }
-    end
-  end
+  #  case code do
+  #    0 -> authentication_setup(state)
+  #    _ -> { :error, :unknow_code }
+  #  end
+  #end
 
-  defp authentication_setup(state) do
-    { :ok, message } = receive_message(state)
+  #defp authentication_setup(state) do
+  #  { :ok, message } = receive_message(state)
 
-    case message do
-      { :read_for_query, _status } -> { :ok, state.status(:read_for_query) }
-      _ -> authentication_setup(state)
-    end
-  end
+  #  case message do
+  #    { :read_for_query, _status } -> { :ok, state.status(:read_for_query) }
+  #    _ -> authentication_setup(state)
+  #  end
+  #end
 
   defp parse_connection_info(<<"postgresql://", _ ::binary>> = connection_info) do
     uri = URI.parse(connection_info)

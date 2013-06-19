@@ -44,7 +44,22 @@ At this moment you can do something like this:
  #=> [["1", true, false,"t",1234]]
 ```
 
-## TODO
+## Spec
+
+Things that we should support initially:
+
+* connect to datatabase using:
+  - no password
+  - md5 password
+  - unix socket
+* environment variables
+* query database using:
+  - simple query
+  - prepared statement
+  - cursor
+* notifications
+
+## TODO?
 
 * application behaviour
 * authentication behaviour
