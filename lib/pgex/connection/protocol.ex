@@ -29,6 +29,10 @@ defmodule PGEx.Connection.Protocol do
     envelope(?Q, << to_binary(query) :: binary, 0 :: integer>>)
   end
 
+  def envelope(:password, data) do
+    envelope(?p, << to_binary(data) :: binary, 0 :: integer>>)
+  end
+
   def envelope(code, binary) do
     size = 4 + size(binary)
     << code :: 8, size :: 32, binary :: binary >>

@@ -51,6 +51,10 @@ defmodule PGEx.Connection do
   @doc """
   Sends enveloped message to backend
   """
+  def send_message(conn, { :password, data }) do
+    send_message(conn, envelope(:password, data))
+  end
+
   def send_message(state, data) when is_list(data) do
     packet = Enum.map data, fn({ k, v }) -> encode(k, v) end |> envelope
 

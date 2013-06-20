@@ -8,19 +8,22 @@ end
 
 
 defmodule PGEx.Authentication.Method.AuthenticationOK do
-  @behaviour PGEx.Authentication.Method.Behaviour
+  @behaviour PGEx.Authentication.Method
 
   def authenticate(conn), do: conn.status(:connected)
 end
 
 defmodule PGEx.Authentication.Method.CleartextPassword do
-  @behaviour PGEx.Authentication.Method.Behaviour
+  @behaviour PGEx.Authentication.Method
 
-  def authenticate(conn), do: conn #not implemented
+  def authenticate(conn) do
+    IO.inspect conn.password
+    PGEx.Connection.send_message(conn, { :password, conn.password })
+  end
 end
 
 defmodule PGEx.Authentication.Method.MD5Password do
-  @behaviour PGEx.Authentication.Method.Behaviour
+  @behaviour PGEx.Authentication.Method
 
   def authenticate(conn) do
     IO.inspect _md5([_md5([conn.user, conn.password]), conn.salt])
