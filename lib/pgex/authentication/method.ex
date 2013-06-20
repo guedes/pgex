@@ -17,7 +17,6 @@ defmodule PGEx.Authentication.Method.CleartextPassword do
   @behaviour PGEx.Authentication.Method
 
   def authenticate(conn) do
-    IO.inspect conn.password
     PGEx.Connection.send_message(conn, { :password, conn.password })
   end
 end
